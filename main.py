@@ -34,33 +34,62 @@ def addDeck():
             cards.append(Card(cardTypes[x], cardNames[y]))
 
 def total(hand):
-    return cardValues.get(hand[0].value) + cardValues.get(hand[1].value)
+    total = 0
+    for x in range(0, len(hand)):
+        total += cardValues.get(hand[x].value)
 
-def init(decks):
-    for x in range(0, int(decks)):
+    return total
+
+def dealHand(hand):
+    randomIndex = r.randint(0, len(cards))
+    randomCard = cards[randomIndex]
+    del cards[randomIndex]
+    hand.append(randomCard)
+
+def hit(hand):
+    randomIndex = r.randint(0, len(cards))
+    randomCard = cards[randomIndex]
+    del cards[randomIndex]
+    hand.append(randomCard)
+    bustCheck(hand)
+
+def bustCheck(hand):
+    if (total(hand) > 21):
+        print("You have gone bust, you lose!")
+        print("Closing program......")
+        exit(0)
+    else:
+        pass
+
+def init():
+    #4 is default because all casinos play blackjack with four decks shuffled together
+    for x in range(0, 4):
         addDeck()
 
 def main():
-    init(4)
-
-    #for x in range(0, len(cards)):
-        #print(f"{x} : {cards[x].type}, {cards[x].value}")
+    run = True
+    init()
 
     x = input("Welcome to Blackjack, type s to start\n")
 
-    if (x != "s"):
+    if (x.lower() != "s"):
         print("Ok quitting")  
         exit(0)
     else:
         pass
 
     for x in range(0, 2):
-        randomCard = cards[r.randint(0, len(cards))]
-        dealerHand.append(randomCard)
+        dealHand(dealerHand)
+        dealHand(playerHand)
 
-    for x in range(0, len(dealerHand)):
-        print(f"The dealer has {dealerHand[x].type} {dealerHand[x].value}")
-        print(total(dealerHand))
+    print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
+    print(f"You have {total(playerHand)}")
+
+    x = input("Would you like to hit(h) or stand(s)\n")
+
+    if (x.lower() == "h"):
+        hit(playerHand)
+        print(f"Your total is now {total(playerHand)}")
 
 if __name__ == "__main__":
     main()
