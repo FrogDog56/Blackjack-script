@@ -55,11 +55,8 @@ def hit(hand):
 
 def bustCheck(hand):
     if (total(hand) > 21):
-        print("You have gone bust, you lose!")
-        print("Closing program......")
-        exit(0)
-    else:
-        pass
+        return True
+    return False
 
 def init():
     #4 is default because all casinos play blackjack with four decks shuffled together
@@ -68,6 +65,7 @@ def init():
 
 def main():
     run = True
+
     init()
 
     x = input("Welcome to Blackjack, type s to start\n")
@@ -78,18 +76,28 @@ def main():
     else:
         pass
 
-    for x in range(0, 2):
-        dealHand(dealerHand)
-        dealHand(playerHand)
+    while run:
 
-    print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
-    print(f"You have {total(playerHand)}")
+        for x in range(0, 2):
+            dealHand(dealerHand)
+            dealHand(playerHand)
 
-    x = input("Would you like to hit(h) or stand(s)\n")
+        print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
+        print(f"You have {total(playerHand)}")
 
-    if (x.lower() == "h"):
-        hit(playerHand)
-        print(f"Your total is now {total(playerHand)}")
+        x = input("Would you like to hit(h) or stand(s)\n")
+
+        if (x.lower() == "h"):
+            hit(playerHand)
+            print(f"Your total is now {total(playerHand)}")
+        else:
+            while total(dealerHand) < 17:
+                hit(dealerHand)
+
+        dealerHand.clear()
+        playerHand.clear()
+
+        print("<--------------------------------->")
 
 if __name__ == "__main__":
     main()
