@@ -100,10 +100,17 @@ def main():
         while total(dealerHand) < 17:
             hit(dealerHand)
 
-        if (total(dealerHand) < total(playerHand)):
-            print(f"You win you have {total(playerHand)}")
+        if (total(playerHand) > 21):
+            print("You have gone bust you lose!")
+        elif (total(dealerHand) > 21):
+            print("You win, the dealer has gone bust!")
         else:
-            print(f"Dealer wins with {total(dealerHand)}")
+            if (total(dealerHand) == total(playerHand)):
+                print(f"It is a draw you both have {total(playerHand)}")
+            elif (total(dealerHand) < total(playerHand)):
+                print(f"You win you have {total(playerHand)}")
+            else:
+                print(f"Dealer wins with {total(dealerHand)}")
 
         dealerHand.clear()
         playerHand.clear()
