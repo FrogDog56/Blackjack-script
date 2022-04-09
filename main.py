@@ -85,14 +85,25 @@ def main():
         print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
         print(f"You have {total(playerHand)}")
 
-        x = input("Would you like to hit(h) or stand(s)\n")
+        stand = False
 
-        if (x.lower() == "h"):
-            hit(playerHand)
-            print(f"Your total is now {total(playerHand)}")
+        while stand == False:
+            x = input("Would you like to hit(h) or stand(s)\n")
+
+            if (x.lower() == "h"):
+                hit(playerHand)
+                print(f"Your total is now {total(playerHand)}")
+            else:
+                stand = True
+                break
+
+        while total(dealerHand) < 17:
+            hit(dealerHand)
+
+        if (total(dealerHand) < total(playerHand)):
+            print(f"You win you have {total(playerHand)}")
         else:
-            while total(dealerHand) < 17:
-                hit(dealerHand)
+            print(f"Dealer wins with {total(dealerHand)}")
 
         dealerHand.clear()
         playerHand.clear()
