@@ -59,12 +59,13 @@ def bustCheck(hand):
     return False
 
 def init():
-    #4 is default because all casinos play blackjack with four decks shuffled together
+    #4 is default because most casinos play blackjack with four deck shoes
     for x in range(0, 4):
         addDeck()
 
 def main():
     run = True
+    chips = 10000
 
     init()
 
@@ -77,6 +78,18 @@ def main():
         pass
 
     while run:
+
+        bet = False
+
+        while bet == False:
+            x = input("Place your bet\n")
+
+            if ((chips - int(x)) > 0):
+                chips -= int(x)
+                bet = True
+                print(f"Your bet is {x} chips\n")
+            else:
+                print("You don't have enough chips to place that bet!\n")
 
         for x in range(0, 2):
             dealHand(dealerHand)
