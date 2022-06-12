@@ -1,9 +1,12 @@
 import random as r
 
+#TODO fix more than one ace issue
+#TODO add split and double
+
 cardTypes = ("hearts", "clubs", "spades", "diamonds")
 cardNames = ("ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king")
 cardValues = {
-                "ace" : 1, 
+                "ace" : 11, 
                 "2" : 2, 
                 "3" : 3, 
                 "4" : 4,
@@ -35,12 +38,20 @@ def addDeck():
 
 def total(hand):
     total = 0
+    ace = 0
+    for x in range(0, len(hand)):
+        if (hand[x].value == "ace"):
+            ace += 1
+
     for x in range(0, len(hand)):
         total += cardValues.get(hand[x].value)
 
+    if (total > 21):
+        total -= 10 * ace
+
     return total
 
-def dealHand(hand):
+def dealCard(hand):
     randomIndex = r.randint(0, len(cards))
     randomCard = cards[randomIndex]
     del cards[randomIndex]
@@ -59,15 +70,15 @@ def bustCheck(hand):
     return False
 
 def init():
-    #4 is default because most casinos play blackjack with four deck shoes
+    #4 is default because most casinos play blackjack with a four deck shoe
     for x in range(0, 4):
         addDeck()
 
 def main():
     run = True
-    chips = 10000
 
     init()
+    chips = 10000
 
     x = input("Welcome to Blackjack, type s to start\n")
 
@@ -77,53 +88,63 @@ def main():
     else:
         pass
 
+    print(f"You have {chips} chips, good luck!")
+
     while run:
 
-        bet = False
+        x = input("Place your bet\n")
+        bet = int(x)
 
-        while bet == False:
-            x = input("Place your bet\n")
-
-            if ((chips - int(x)) > 0):
-                chips -= int(x)
-                bet = True
-                print(f"Your bet is {x} chips\n")
-            else:
-                print("You don't have enough chips to place that bet!\n")
+        if ((chips - bet) > 0):
+            chips -= bet
+            print(f"Your bet is {x} chips\n")
+        else:
+            print("You don't have enough chips to place that bet!\n")
 
         for x in range(0, 2):
-            dealHand(dealerHand)
-            dealHand(playerHand)
+            dealCard(dealerHand)
+            dealCard(playerHand)
 
-        print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
-        print(f"You have {total(playerHand)}")
+        if (total(playerHand) != 21):
+            print(f"The dealers visible card is {dealerHand[0].value} of {dealerHand[0].type}")
+            print(f"You have {total(playerHand)}")
 
-        stand = False
+            stand = False
 
-        while stand == False:
-            x = input("Would you like to hit(h) or stand(s)\n")
+            while stand == False:
+                x = input("Would you like to hit(h) or stand(s)\n")
 
-            if (x.lower() == "h"):
-                hit(playerHand)
-                print(f"Your total is now {total(playerHand)}")
-            else:
-                stand = True
-                break
+                if (x.lower() == "h"):
+                    hit(playerHand)
+                    print(f"Your total is now {total(playerHand)}")
+                else:
+                    stand = True
+                    break
 
         while total(dealerHand) < 17:
             hit(dealerHand)
 
-        if (total(playerHand) > 21):
+        if (total(playerHand) == 21 and len(playerHand) == 2):
+            print("You have blackjack you win!")
+            chips += bet * 2.5
+        elif (total(dealerHand) == 21 and len(dealerHand) == 2):
+            print("Dealer has blackjack you lose!")
+        elif (total(playerHand) > 21):
             print("You have gone bust you lose!")
         elif (total(dealerHand) > 21):
             print("You win, the dealer has gone bust!")
+            chips += bet * 2
         else:
             if (total(dealerHand) == total(playerHand)):
                 print(f"It is a draw you both have {total(playerHand)}")
+                chips += bet
             elif (total(dealerHand) < total(playerHand)):
                 print(f"You win you have {total(playerHand)}")
+                chips += bet * 2
             else:
                 print(f"Dealer wins with {total(dealerHand)}")
+
+        print(f"You now have {chips} chips!")
 
         dealerHand.clear()
         playerHand.clear()
